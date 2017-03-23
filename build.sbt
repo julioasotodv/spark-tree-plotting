@@ -6,11 +6,10 @@ scalaVersion := "2.11.8"
 
 libraryDependencies += "net.liftweb" % "lift-json_2.11" % "3.0.1"
 
-/*
+
 assemblyShadeRules in assembly := Seq(
-    ShadeRule.rename("net.liftweb.json.**" -> "org.lift.web.library.json").inAll
+    ShadeRule.rename("net.liftweb.json.**" -> "org.lift.web.library.json.@1").inAll
 )
-*/
 
 // Spark Packages config
 spName := "julioasotodv/spark-tree-plotting"
