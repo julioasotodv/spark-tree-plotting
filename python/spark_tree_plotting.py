@@ -7,7 +7,7 @@ def generate_color_brew(n):
 
 
 def node_to_str(node, featureNames, categoryNames, classNames, numClasses, 
-                nodeList, filled, round_leaves):
+                nodeList, filled, round_leaves, colorBrew):
     # classNames preparation:
     if classNames is None:
         class_name = node["prediction"]
@@ -65,27 +65,28 @@ def node_to_str(node, featureNames, categoryNames, classNames, numClasses,
     
     # Color adding:
     if filled is True:
-        h = generate_color_brew(numClasses)[int(node["prediction"])]
+        h = colorBrew[int(node["prediction"])]
         s = node["impurity"]
         nodeList.append(graph_string + ' [fillcolor="%.4f,%.4f,%.4f"]' % (h,s,1.0))
     return graph_string
 
 def get_num_classes(node, current_classes=None):
-    if current_classes is None:
-        current_classes = set()
-    else:
-        current_classes = current_classes.copy()
-    if node["nodeType"] == "internal":
-        current_classes.add(node["prediction"])
-        return (get_num_classes(node["leftChild"], current_classes=current_classes) 
-                | get_num_classes(node["rightChild"], current_classes=current_classes)
-               )
-    else:
-        current_classes.add(node["prediction"])
-        return current_classes
+    nodes_to_explore = [node]
+    classes = set()
+    while len(nodes_to_explore) > 0:
+        if len(nodes_to_explore) == 0:
+            break
+        current_node = nodes_to_explore.pop()
+        classes.add(current_node["prediction"])
+        
+        if current_node["nodeType"] == "internal":
+            nodes_to_explore.append(current_node["leftChild"])
+            nodes_to_explore.append(current_node["rightChild"])
+    return int(max(list(classes)) + 1)
 
 def relations_to_str(node, featureNames=None, categoryNames=None, classNames=None, 
-                     numClasses=None, nodeList=None, filled=True, round_leaves=True):
+                     numClasses=None, nodeList=None, filled=True, roundLeaves=True,
+                     color_brew=None):
     nodes_to_explore = [node]
     relations = []
     while len(nodes_to_explore) > 0:
@@ -95,19 +96,19 @@ def relations_to_str(node, featureNames=None, categoryNames=None, classNames=Non
         if current_node["nodeType"] == "leaf":
             continue
         relations.append(node_to_str(current_node, featureNames, categoryNames, 
-                                     classNames, numClasses, nodeList, filled, round_leaves) 
+                                     classNames, numClasses, nodeList, filled, roundLeaves, color_brew) 
                          + "->" 
                          + node_to_str(current_node["leftChild"], featureNames, categoryNames, 
-                                       classNames, numClasses, nodeList, filled, round_leaves) 
+                                       classNames, numClasses, nodeList, filled, roundLeaves, color_brew) 
                          + '[labeldistance=2.5, labelangle=45., headlabel="True"]' 
                          + "\n")
         nodes_to_explore.append(current_node["leftChild"])
         
         relations.append(node_to_str(current_node, featureNames, categoryNames, 
-                                     classNames, numClasses, nodeList, filled, round_leaves) 
+                                     classNames, numClasses, nodeList, filled, roundLeaves, color_brew) 
                          + "->" 
                          + node_to_str(current_node["rightChild"], featureNames, categoryNames, 
-                                       classNames, numClasses, nodeList, filled, round_leaves) 
+                                       classNames, numClasses, nodeList, filled, roundLeaves, color_brew) 
                          + '[labeldistance=2.5, labelangle=-45., headlabel="False"]' 
                          + "\n")
         nodes_to_explore.append(current_node["rightChild"])
@@ -115,11 +116,12 @@ def relations_to_str(node, featureNames=None, categoryNames=None, classNames=Non
 
 
 def export_graphviz(DecisionTreeClassificationModel, featureNames=None, categoryNames=None, classNames=None,
-                   filled=True, rounded_corners=True, round_leaves=True):
+                   filled=True, roundedCorners=True, roundLeaves=True):
     sc = SparkContext.getOrCreate()
     tree_dict = loads(sc._jvm.com.jasoto.spark.ml.SparkMLTree(DecisionTreeClassificationModel._java_obj).toJsonPlotFormat())
 
-    num_classes = len(get_num_classes(tree_dict))
+    num_classes = get_num_classes(tree_dict)
+    color_brew = generate_color_brew(num_classes)
     node_list = []
     graph = relations_to_str(tree_dict, 
                              featureNames=featureNames, 
@@ -128,12 +130,13 @@ def export_graphviz(DecisionTreeClassificationModel, featureNames=None, category
                              numClasses=num_classes,
                              nodeList=node_list,
                              filled=filled,
-                             round_leaves=round_leaves)
+                             roundLeaves=roundLeaves,
+                             color_brew=color_brew)
     node_properties = "\n".join(node_list)
     filled_and_rounded = []
     if filled:
         filled_and_rounded.append("filled")
-    if rounded_corners:
+    if roundedCorners:
         filled_and_rounded.append("rounded")
     dot_string = """digraph Tree {
                     node [shape=box style="%s"]
