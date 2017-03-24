@@ -114,11 +114,14 @@ def relations_to_str(node, featureNames=None, categoryNames=None, classNames=Non
         nodes_to_explore.append(current_node["rightChild"])
     return relations
 
+def generate_tree_json(DecisionTreeClassificationModel):
+    sc = SparkContext.getOrCreate()
+    return sc._jvm.com.jasoto.spark.ml.SparkMLTree(DecisionTreeClassificationModel._java_obj).toJsonPlotFormat()
 
 def export_graphviz(DecisionTreeClassificationModel, featureNames=None, categoryNames=None, classNames=None,
                    filled=True, roundedCorners=True, roundLeaves=True):
     sc = SparkContext.getOrCreate()
-    tree_dict = loads(sc._jvm.com.jasoto.spark.ml.SparkMLTree(DecisionTreeClassificationModel._java_obj).toJsonPlotFormat())
+    tree_dict = loads(generate_tree_json(DecisionTreeClassificationModel))
 
     num_classes = get_num_classes(tree_dict)
     color_brew = generate_color_brew(num_classes)
