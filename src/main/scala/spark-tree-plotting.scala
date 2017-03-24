@@ -1,7 +1,6 @@
 package com.jasoto.spark.ml
 
-case class decisionNode(id:Int,
-                        featureIndex:Option[Int], 
+case class decisionNode(featureIndex:Option[Int], 
                         gain:Option[Double], 
                         impurity:Double,
                         threshold:Option[Double], // Continuous split
@@ -28,7 +27,7 @@ def get_split_type(split:org.apache.spark.ml.tree.Split):String = split match {
 }
 
 class SparkMLTree(tree:org.apache.spark.ml.classification.DecisionTreeClassificationModel) {
-    def get_decision_rules(node: org.apache.spark.ml.tree.Node, id:Int=0):decisionNode = {
+    def get_decision_rules(node: org.apache.spark.ml.tree.Node):decisionNode = {
         val node_type = Functions.get_node_type(node)
 
         val gain:Option[Double] = node_type match {
@@ -61,17 +60,16 @@ class SparkMLTree(tree:org.apache.spark.ml.classification.DecisionTreeClassifica
         }
 
         val left_child: Option[decisionNode] = node_type match {
-            case "internal" => Some(get_decision_rules(node.asInstanceOf[org.apache.spark.ml.tree.InternalNode].leftChild, id+1))
+            case "internal" => Some(get_decision_rules(node.asInstanceOf[org.apache.spark.ml.tree.InternalNode].leftChild))
             case other => None
             }
 
         val right_child: Option[decisionNode] = node_type match {
-            case "internal" => Some(get_decision_rules(node.asInstanceOf[org.apache.spark.ml.tree.InternalNode].rightChild, id+2))
+            case "internal" => Some(get_decision_rules(node.asInstanceOf[org.apache.spark.ml.tree.InternalNode].rightChild))
             case other => None  
         }
 
-        decisionNode(id = id,
-                     featureIndex = feature_index,
+        decisionNode(featureIndex = feature_index,
                      gain = gain,
                      impurity = node.impurity,
                      threshold = node_threshold,
