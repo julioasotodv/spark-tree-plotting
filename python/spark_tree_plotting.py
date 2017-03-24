@@ -1,6 +1,7 @@
 from collections import OrderedDict
 from json import loads, dumps
 from pyspark import SparkContext
+from pydot import graph_from_dot_data
 
 def generate_color_brew(n):
     hue_step = 360 / float(n)
@@ -194,4 +195,16 @@ def export_graphviz(DecisionTreeClassificationModel, featureNames=None, category
                     %s}
                     }""" % (",".join(filled_and_rounded), "".join(graph), node_properties)
     return dot_string
+
+def plot_tree(DecisionTreeClassificationModel, featureNames=None, categoryNames=None, classNames=None,
+              filled=True, roundedCorners=True, roundLeaves=True):
+    return graph_from_dot_data(export_graphviz(DecisionTreeClassificationModel,
+                                               featureNames=featureNames,
+                                               categoryNames=categoryNames,
+                                               classNames=classNames,
+                                               filled=filled,
+                                               roundedCorners=roundedCorners,
+                                               roundLeaves=roundLeaves
+                                               )
+                              ).create_png()
     
