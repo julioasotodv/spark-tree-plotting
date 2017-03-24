@@ -70,7 +70,7 @@ def node_to_str(node, featureNames, categoryNames, classNames, numClasses,
         nodeList.append(graph_string + ' [fillcolor="%.4f,%.4f,%.4f"]' % (h,s,1.0))
     return graph_string
 
-def get_num_classes(node, current_classes=None):
+def get_num_classes(node):
     nodes_to_explore = [node]
     classes = set()
     while len(nodes_to_explore) > 0:
