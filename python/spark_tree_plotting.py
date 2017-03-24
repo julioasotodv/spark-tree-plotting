@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from json import loads, dumps
 from pyspark import SparkContext
 
@@ -24,7 +25,7 @@ def node_to_str(node, featureNames, categoryNames, classNames, numClasses,
         
         if featureNames is None:
             feature_name = node["featureIndex"]
-            feature_name_str = "feature #" + str(feature_name)
+            feature_name_str = "Feature #" + str(feature_name)
         else:
             featureNames = dict(enumerate(featureNames))
             feature_name = featureNames[node["featureIndex"]]
@@ -32,36 +33,48 @@ def node_to_str(node, featureNames, categoryNames, classNames, numClasses,
         
         if categoryNames is None:
             if node["splitType"] == "categorical":
-                categories = "categories# " + "{" + ",".join(str(n) for n in node["leftCategories"]) + "}"
+                list_of_categories_5_by_5 = []
+                for i in range(0, len(node["leftCategories"]), 5):
+                    list_of_categories_5_by_5.append(",".join([str(j) for j in node["leftCategories"][i:i+5]]))
+                categories = "categories# " + "{" + "\\n".join(str(n) for n in list_of_categories_5_by_5) + "}"
         else:
             if node["splitType"] == "categorical":
                 try:
                     category_names = dict(enumerate(categoryNames[feature_name]))
-                    categories = "{" + ",".join(category_names[n] for n in node["leftCategories"]) + "}"
+                    list_of_categories_5_by_5 = []
+                    for i in range(0, len(node["leftCategories"]), 5):
+                        list_of_categories_5_by_5.append(",".join([category_names[j] for j in node["leftCategories"][i:i+5]]))
+                    categories = "{" + "\\n".join(n for n in list_of_categories_5_by_5) + "}"
                 except KeyError:
-                    categories = "categories# " + "{" + ",".join(str(n) for n in node["leftCategories"]) + "}"
+                    list_of_categories_5_by_5 = []
+                    for i in range(0, len(node["leftCategories"]), 5):
+                        list_of_categories_5_by_5.append(",".join([str(j) for j in node["leftCategories"][i:i+5]]))
+                    categories = "categories# " + "{" + "\\n".join(str(n) for n in list_of_categories_5_by_5) + "}"
 
         # For continuous split:
         if node["splitType"] == "continuous":
-            label = """ label="%s <= %.4f\\nImpurity = %.4f\\nGain = %.4f\\nPrediction = %s" """ % (feature_name_str,
-                                                                                                    node["threshold"],
-                                                                                                    node["impurity"],
-                                                                                                    node["gain"],
-                                                                                                    class_name_str
-                                                                                                   )
+            label = """ label="Node ID %s\\n%s <= %.4f\\nImpurity = %.4f\\nGain = %.4f\\nPrediction = %s" """ % (node["id"],
+                                                                                                                 feature_name_str,
+                                                                                                                 node["threshold"],
+                                                                                                                 node["impurity"],
+                                                                                                                 node["gain"],
+                                                                                                                 class_name_str
+                                                                                                                )
         # For categorical split:
         else:
-            label = """ label="%s in %s\\nImpurity = %.4f\\nGain = %.4f\\nPrediction = %s" """ % (feature_name_str,
-                                                                                                  categories,
-                                                                                                  node["impurity"],
-                                                                                                  node["gain"],
-                                                                                                  class_name_str
-                                                                                                  )
+            label = """ label="Node ID %s\\n%s in %s\\nImpurity = %.4f\\nGain = %.4f\\nPrediction = %s" """ % (node["id"],
+                                                                                                               feature_name_str,
+                                                                                                               categories,
+                                                                                                               node["impurity"],
+                                                                                                               node["gain"],
+                                                                                                               class_name_str
+                                                                                                              )
     # Leaf node:
     else:
-        label = """ label="Impurity = %.4f\\nPrediction = %s" """ % (node["impurity"],
-                                                                     class_name_str
-                                                                    )
+        label = """ label="Node ID %s\\nImpurity = %.4f\\nPrediction = %s" """ % (node["id"],
+                                                                                  node["impurity"],
+                                                                                  class_name_str
+                                                                                 )
         if round_leaves is True:
             attributes.append("shape=ellipse")
             #nodeList.append(graph_string + "[shape=ellipse]") # Change leaf shape
@@ -100,14 +113,14 @@ def add_node_ids(node):
     while len(nodes_to_explore) > 0:
         if len(nodes_to_explore) == 0:
             break
-        current_node = nodes_to_explore.pop()
+        current_node = nodes_to_explore.pop(0)
         counter += 1
         current_node["id"] = counter
         #classes.add(current_node["prediction"])
         
         if current_node["nodeType"] == "internal":
-            nodes_to_explore.append(current_node["rightChild"])
             nodes_to_explore.append(current_node["leftChild"])
+            nodes_to_explore.append(current_node["rightChild"])
     return node
 
 def relations_to_str(node, featureNames=None, categoryNames=None, classNames=None, 
@@ -146,8 +159,8 @@ def generate_tree_json(DecisionTreeClassificationModel, withNodeIDs=False):
     json_tree = sc._jvm.com.jasoto.spark.ml.SparkMLTree(DecisionTreeClassificationModel._java_obj).toJsonPlotFormat()
 
     if withNodeIDs:
-        json_tree = dumps(add_node_ids(loads(json_tree)), indent=2)
-        
+        json_tree = dumps(add_node_ids(loads(json_tree, object_pairs_hook=OrderedDict)), indent=2)
+
     return json_tree
 
 def export_graphviz(DecisionTreeClassificationModel, featureNames=None, categoryNames=None, classNames=None,
