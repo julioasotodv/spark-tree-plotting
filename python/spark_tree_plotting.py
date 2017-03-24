@@ -120,7 +120,6 @@ def generate_tree_json(DecisionTreeClassificationModel):
 
 def export_graphviz(DecisionTreeClassificationModel, featureNames=None, categoryNames=None, classNames=None,
                    filled=True, roundedCorners=True, roundLeaves=True):
-    sc = SparkContext.getOrCreate()
     tree_dict = loads(generate_tree_json(DecisionTreeClassificationModel))
 
     num_classes = get_num_classes(tree_dict)
