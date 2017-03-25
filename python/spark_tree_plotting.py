@@ -438,7 +438,7 @@ def plot_tree(DecisionTreeClassificationModel, featureNames=None, categoryNames=
                                )
     if type(graph) is list:
         plot = graph[0].create_png()
-    else
+    else:
         plot = graph.create_png()
     return plot
     
