@@ -8,7 +8,7 @@ Given a `DecisionTreeClassificationModel`, spark_tree_plotting generates a JSON 
 Moreover, a simple JSON-to-DOT Python function allows you to plot trees in PySpark in a very simple manner (just as in Scikit-Learn).
 
 ## Demo
-A Jupyter notebook can be found [here]().
+A Jupyter notebook can be found [here](https://nbviewer.jupyter.org/github/julioasotodv/spark-tree-plotting/blob/master/examples/Example_covertype_dataset.ipynb).
 
 ## Requirements
 - Apache Spark (versions higher than 2.0 are supported).
