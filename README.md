@@ -11,13 +11,13 @@ Moreover, a simple JSON-to-DOT Python function allows you to plot trees in PySpa
 A Jupyter notebook can be found [here](https://nbviewer.jupyter.org/github/julioasotodv/spark-tree-plotting/blob/master/examples/Example_covertype_dataset.ipynb).
 
 ## Requirements
-- Apache Spark (versions higher than 2.0 are supported).
+- Apache Spark (versions 2.0 and higher are supported).
 - Optionally, `pydot3` in the Spark driver if you plan to plot trees with th built-in functionality under PySpark. You can easily install it with `pip install pydot3`.
 
 ## Installation
 
 ### Online
-If your Spark cluster has Internet access, the easiest way to use `spark-tree-plotting` is through [spark-packages.org](https://spark-packages.org/). There are two ways of doing so:
+If your Spark cluster has Internet access, the easiest way to use `spark-tree-plotting` is through [spark-packages.org](https://spark-packages.org/package/julioasotodv/spark-tree-plotting). There are two ways of doing so:
 
 The first one is just through your terminal, But you will need to do it for every new Spark app that you launch:
 ```bash
