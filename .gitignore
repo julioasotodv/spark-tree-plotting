@@ -8,3 +8,5 @@ target/
 examples/*.py
 examples/*.pyc
 *.ipynb_checkpoints*
+.sbtcredentials
+
