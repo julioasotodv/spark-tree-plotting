@@ -1,9 +1,14 @@
 # spark-tree-plotting
 
+![Iris](https://i.imgur.com/FcqKe9w.png)
+
 This module provides a simple tool for plotting an easy to understand graphical representation of Spark ML's DecisionTreeClassificationModels, very similar to the one Python's Scikit-Learn provides.
 Given a `DecisionTreeClassificationModel`, spark_tree_plotting generates a JSON file with the relevant metadata in order to plot the tree. Each split node (either continuous or categorical) is parsed with its impurity measure and gain.
 
 Moreover, a simple JSON-to-DOT Python function allows you to plot trees in PySpark in a very simple manner (just as in Scikit-Learn).
+
+## Demo
+A Jupyter notebook can be found [here]().
 
 ## Requirements
 - Apache Spark (versions higher than 2.0 are supported).
@@ -16,10 +21,10 @@ If your Spark cluster has Internet access, the easiest way to use `spark-tree-pl
 
 The first one is just through your terminal, But you will need to do it for every new Spark app that you launch:
 ```bash
-~$ spark-shell/pyspark/spark-submit --packages julioasotodv:spark-tree-plotting:0.2 
+~$ spark-shell/pyspark/spark-submit --packages julioasotodv:spark-tree-plotting:0.2
 ```
 
-The other one is adding the following line at the end of your `spark-defaults.conf` file. After done, all new Spark apps will be able to use the package:
+The other one is adding the following line at the end of your `spark-defaults.conf` file. Once done, all new Spark apps will be able to use the package:
 
 ```bash
 spark.jars.packages    julioasotodv:spark-tree-plotting:0.2
