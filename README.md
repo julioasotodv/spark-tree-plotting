@@ -16,7 +16,7 @@ If your Spark cluster has Internet access, the easiest way to use `spark-tree-pl
 
 The first one is just through your terminal, But you will need to do it for every new Spark app that you launch:
 ```bash
-~$ spark-shell/pyspark/spark-submit --packages julioasotodv:spark-tree-plotting:0.2
+~$ spark-shell/pyspark/spark-submit --packages julioasotodv:spark-tree-plotting:0.2 
 ```
 
 The other one is adding the following line at the end of your `spark-defaults.conf` file. After done, all new Spark apps will be able to use the package:
