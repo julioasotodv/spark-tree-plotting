@@ -141,7 +141,7 @@ def node_to_str(node, featureNames, categoryNames, classNames, numClasses,
     # Color adding:
     if filled is True:
         h = colorBrew[int(node["prediction"])]
-        s = node["impurity"]
+        s = 1.0 - node["impurity"]
         attributes.append('fillcolor="%.4f,%.4f,%.4f"' % (h,s,1.0))
         #nodeList.append(graph_string + ' [fillcolor="%.4f,%.4f,%.4f"]' % (h,s,1.0))
 
@@ -427,7 +427,7 @@ def plot_tree(DecisionTreeClassificationModel, featureNames=None, categoryNames=
             "This function requires pydot3 dot be installed. You can easily install it with pip install pydot3"
             )
 
-    return graph_from_dot_data(export_graphviz(DecisionTreeClassificationModel,
+    graph = graph_from_dot_data(export_graphviz(DecisionTreeClassificationModel,
                                                featureNames=featureNames,
                                                categoryNames=categoryNames,
                                                classNames=classNames,
@@ -435,5 +435,10 @@ def plot_tree(DecisionTreeClassificationModel, featureNames=None, categoryNames=
                                                roundedCorners=roundedCorners,
                                                roundLeaves=roundLeaves
                                                )
-                               ).create_png()
+                               )
+    if type(graph) is list:
+        plot = graph[0].create_png()
+    else
+        plot = graph.create_png()
+    return plot
     
