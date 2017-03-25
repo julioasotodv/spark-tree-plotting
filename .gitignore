@@ -1,5 +1,10 @@
 *.pyc
 *.DS_Store
+*metastore_db
+*derby.log
 project/target
 project/project
 target/
+examples/*.py
+examples/*.pyc
+*.ipynb_checkpoints*

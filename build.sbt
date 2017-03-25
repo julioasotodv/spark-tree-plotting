@@ -34,7 +34,7 @@ spIncludeMaven := false
 
 
 // Resulting name for the assembly jar
-jarName in assembly := "spark-tree-plotting.jar"
+jarName in assembly := "spark-tree-plotting_0.1.jar"
 
 // Do not include the Scala library itself in the jar 
 assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
