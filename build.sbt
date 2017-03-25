@@ -1,6 +1,6 @@
 name := "spark-tree-plotting"
 
-version := "0.1"
+version := "0.2"
 
 scalaVersion := "2.11.8"
 
@@ -34,7 +34,7 @@ spIncludeMaven := false
 
 
 // Resulting name for the assembly jar
-jarName in assembly := "spark-tree-plotting_0.1.jar"
+jarName in assembly := "spark-tree-plotting_0.2.jar"
 
 // Do not include the Scala library itself in the jar 
 assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)

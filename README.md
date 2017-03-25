@@ -68,7 +68,7 @@ png_string = plot_tree(your_dtree_classification_model,
                        roundedCorners=True,
                        roundLeaves=True)
 ```
-Now you can do whatever you want with `png_string`, which is a binary PNG that can be written to disk or displayed directly through Jupyter for instance. A Jupyter notebook showing this functionality can be found in the `examples` folder.
+Now you can do whatever you want with `png_string`, which is a binary PNG that can be written to disk or displayed directly through Jupyter for instance. [A Jupyter notebook](https://nbviewer.jupyter.org/github/julioasotodv/spark-tree-plotting/blob/master/examples/Example_covertype_dataset.ipynb) showing this functionality can be found in the `examples` folder.
 
 If you just want the DOT-format string:
 
