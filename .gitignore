@@ -11,5 +11,6 @@ examples/*.pyc
 .sbtcredentials
 .idea/
 examples/.ipynb_checkpoints
-
+examples/tree_model/
+examples/*.png
 
