@@ -13,4 +13,7 @@ examples/*.pyc
 examples/.ipynb_checkpoints
 examples/tree_model/
 examples/*.png
-
+.metals
+.vscode/
+python/__pycache__/
+python/*.pyc
