@@ -9,4 +9,11 @@ examples/*.py
 examples/*.pyc
 *.ipynb_checkpoints*
 .sbtcredentials
-
+.idea/
+examples/.ipynb_checkpoints
+examples/tree_model/
+examples/*.png
+.metals
+.vscode/
+python/__pycache__/
+python/*.pyc
