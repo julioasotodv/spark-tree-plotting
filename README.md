@@ -12,7 +12,7 @@ A Jupyter notebook can be found [here](https://nbviewer.jupyter.org/github/julio
 
 ## Requirements
 - Apache Spark (versions 2.0 and higher are supported).
-- Optionally, `pydot3` in the Spark driver if you plan to plot trees with th built-in functionality under PySpark. You can easily install it with `pip install pydot3`.
+- Optionally, `pydot` in the Spark driver if you plan to plot trees with th built-in functionality under PySpark. You can easily install it with `pip install pydot`.
 
 ## Installation
 
