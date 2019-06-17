@@ -2,9 +2,9 @@ name := "spark-tree-plotting"
 
 version := "0.2"
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.11.12"
 
-libraryDependencies += "net.liftweb" % "lift-json_2.11" % "3.0.1"
+libraryDependencies += "net.liftweb" % "lift-json_2.11" % "3.3.0"
 
 
 assemblyShadeRules in assembly := Seq(
@@ -14,7 +14,7 @@ assemblyShadeRules in assembly := Seq(
 // Spark Packages config
 spName := "julioasotodv/spark-tree-plotting"
 
-sparkVersion := "2.0.0"
+sparkVersion := "2.3.2"
 
 sparkComponents += "mllib"
 
@@ -34,7 +34,7 @@ spIncludeMaven := false
 
 
 // Resulting name for the assembly jar
-jarName in assembly := "spark-tree-plotting_0.2.jar"
+assemblyJarName in assembly := "spark-tree-plotting_0.2.jar"
 
 // Do not include the Scala library itself in the jar 
 assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)

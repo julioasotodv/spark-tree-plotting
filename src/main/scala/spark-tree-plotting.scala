@@ -1,4 +1,4 @@
-package com.jasoto.spark.ml
+package com.vfive.spark.ml
 
 case class decisionNode(featureIndex:Option[Int], 
                         gain:Option[Double], 
@@ -26,7 +26,7 @@ def get_split_type(split:org.apache.spark.ml.tree.Split):String = split match {
 
 }
 
-class SparkMLTree(tree:org.apache.spark.ml.classification.DecisionTreeClassificationModel) {
+class SparkMLTree(tree: org.apache.spark.ml.classification.DecisionTreeClassificationModel) {
     def get_decision_rules(node: org.apache.spark.ml.tree.Node):decisionNode = {
         val node_type = Functions.get_node_type(node)
 

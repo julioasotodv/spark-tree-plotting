@@ -295,7 +295,7 @@ def generate_tree_json(DecisionTreeClassificationModel, withNodeIDs=False):
     """
     sc = SparkContext.getOrCreate()
 
-    json_tree = sc._jvm.com.jasoto.spark.ml.SparkMLTree(DecisionTreeClassificationModel._java_obj).toJsonPlotFormat()
+    json_tree = sc._jvm.com.vfive.spark.ml.SparkMLTree(DecisionTreeClassificationModel._java_obj).toJsonPlotFormat()
 
     if withNodeIDs:
         json_tree = dumps(add_node_ids(loads(json_tree, object_pairs_hook=OrderedDict)), indent=2)
