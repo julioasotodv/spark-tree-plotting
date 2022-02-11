@@ -1,24 +1,14 @@
 name := "spark-tree-plotting"
 
-version := "0.2"
+version := "0.3"
 
-scalaVersion := "2.11.12"
+scalaVersion := "2.12.10"
 
-libraryDependencies += "net.liftweb" % "lift-json_2.11" % "3.3.0"
+libraryDependencies += "net.liftweb" % "lift-json_2.12" % "3.5.0"
 
+libraryDependencies += "org.apache.spark" % "spark-core_2.12" % "3.1.0"
 
-assemblyShadeRules in assembly := Seq(
-    ShadeRule.rename("net.liftweb.json.**" -> "org.lift.web.library.json.@1").inAll
-)
-
-// Spark Packages config
-spName := "julioasotodv/spark-tree-plotting"
-
-sparkVersion := "2.3.2"
-
-sparkComponents += "mllib"
-
-credentials += Credentials(Path.userHome / ".ivy2" / ".sbtcredentials")
+libraryDependencies += "org.apache.spark" % "spark-mllib_2.12" % "3.1.0"
 
 spShortDescription := "A simple tool for plotting Spark ML's Decision Trees"
 
@@ -32,10 +22,17 @@ licenses += "MIT" -> url("https://opensource.org/licenses/MIT")
 
 spIncludeMaven := false
 
-
 // Resulting name for the assembly jar
-assemblyJarName in assembly := "spark-tree-plotting_0.2.jar"
+assemblyJarName in assembly := "spark-tree-plotting_0.3.jar"
 
 // Do not include the Scala library itself in the jar 
 assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
 
+assemblyMergeStrategy := {
+  case m if m.toLowerCase.endsWith("manifest.mf") => MergeStrategy.discard
+  case m if m.toLowerCase.matches("meta-inf.*\\.sf$") => MergeStrategy.discard
+  case "log4j.properties" => MergeStrategy.discard
+  case m if m.toLowerCase.startsWith("meta-inf/services/") => MergeStrategy.filterDistinctLines
+  case "reference.conf" => MergeStrategy.concat
+  case _ => MergeStrategy.first
+}
