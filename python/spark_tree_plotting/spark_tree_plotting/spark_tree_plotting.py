@@ -424,7 +424,7 @@ def plot_tree(DecisionTreeClassificationModel, featureNames=None, categoryNames=
         from pydot import graph_from_dot_data
     except ImportError:
         raise ImportError(
-            "This function requires pydot3 dot be installed. You can easily install it with pip install pydot3"
+            "This function requires pydot dot be installed. You can easily install it with pip install pydot"
             )
 
     graph = graph_from_dot_data(export_graphviz(DecisionTreeClassificationModel,
