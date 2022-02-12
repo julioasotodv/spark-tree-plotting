@@ -1,28 +1,18 @@
 name := "spark-tree-plotting"
 
-version := "0.2"
+version := "0.3"
 
-scalaVersion := "2.11.12"
+scalaVersion := "2.12.10"
 
-libraryDependencies += "net.liftweb" % "lift-json_2.11" % "3.3.0"
-
-
-assemblyShadeRules in assembly := Seq(
-    ShadeRule.rename("net.liftweb.json.**" -> "org.lift.web.library.json.@1").inAll
+libraryDependencies ++= Seq(
+  "net.liftweb" % "lift-json_2.12" % "3.5.0",
+  "org.apache.spark" % "spark-core_2.12" % "3.1.0" % "provided",
+  "org.apache.spark" % "spark-mllib_2.12" % "3.1.0" % "provided"
 )
 
-// Spark Packages config
-spName := "julioasotodv/spark-tree-plotting"
+lazy val spShortDescription = "A simple tool for plotting Spark ML's Decision Trees"
 
-sparkVersion := "2.3.2"
-
-sparkComponents += "mllib"
-
-credentials += Credentials(Path.userHome / ".ivy2" / ".sbtcredentials")
-
-spShortDescription := "A simple tool for plotting Spark ML's Decision Trees"
-
-spDescription := """This module provides a simple tool for plotting an easy to understand graphical representation
+lazy val spDescription = """This module provides a simple tool for plotting an easy to understand graphical representation
                     |of Spark ML's DecisionTreeClassificationModels, very similar to the one Python's Scikit-Learn provides.
                     |Given a DecisionTreeClassificationModel, spark_tree_plotting generates a JSON file with 
                     |the relevant metadata in order to plot the tree. Moreover, a simple JSON-to-DOT python
@@ -30,12 +20,17 @@ spDescription := """This module provides a simple tool for plotting an easy to u
 
 licenses += "MIT" -> url("https://opensource.org/licenses/MIT")
 
-spIncludeMaven := false
-
-
 // Resulting name for the assembly jar
-assemblyJarName in assembly := "spark-tree-plotting_0.2.jar"
+assembly / assemblyJarName := { name.value + "-assembly-" + version.value + ".jar" }
 
 // Do not include the Scala library itself in the jar 
-assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
+assembly / assemblyOption := (assembly / assemblyOption).value.withIncludeScala(false)
 
+assemblyMergeStrategy := {
+  case m if m.toLowerCase.endsWith("manifest.mf") => MergeStrategy.discard
+  case m if m.toLowerCase.matches("meta-inf.*\\.sf$") => MergeStrategy.discard
+  case "log4j.properties" => MergeStrategy.discard
+  case m if m.toLowerCase.startsWith("meta-inf/services/") => MergeStrategy.filterDistinctLines
+  case "reference.conf" => MergeStrategy.concat
+  case _ => MergeStrategy.first
+}
